@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
+
   public UserDTO(User user) {
     this.id = user.getId();
     this.email = user.getEmail();
@@ -18,6 +19,10 @@ public class UserDTO {
   }
 
   private String id;
+
   private String email;
+
   private String type;
+
+  private String token;
 }
