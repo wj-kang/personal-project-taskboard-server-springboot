@@ -1,9 +1,9 @@
-package com.wonjunkang.dailyboard.mongo;
+package com.wonjunkang.taskboard.mongo;
 
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.BeforeConvertEvent;
 import org.springframework.stereotype.Component;
-import com.wonjunkang.dailyboard.model.BaseModel;
+import com.wonjunkang.taskboard.model.BaseModel;
 import java.util.Date;
 
 @Component

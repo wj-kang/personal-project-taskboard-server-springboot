@@ -1,6 +1,6 @@
-package com.wonjunkang.dailyboard.dto;
+package com.wonjunkang.taskboard.dto;
 
-import com.wonjunkang.dailyboard.model.User;
+import com.wonjunkang.taskboard.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,24 +1,29 @@
-package com.wonjunkang.dailyboard.model;
+package com.wonjunkang.taskboard.model;
 
+import java.util.Date;
 import java.util.List;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Document("task-lists")
+@Document("tasks")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TaskList extends BaseModel {
+public class Task extends BaseModel {
 
   private String title;
 
-  @DBRef
-  private List<Task> tasks;
+  private String description;
+
+  private boolean isDone;
+
+  private Date dueDate;
+
+  private List<String> label;
 
 }
 

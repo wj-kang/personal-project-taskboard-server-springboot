@@ -1,13 +1,12 @@
-package com.wonjunkang.dailyboard;
+package com.wonjunkang.taskboard;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DailyBoardApplicationTests {
+class TaskBoardApplicationTests {
 
 	@Test
-	void contextLoads() {
-	}
+	void contextLoads() {}
 
 }

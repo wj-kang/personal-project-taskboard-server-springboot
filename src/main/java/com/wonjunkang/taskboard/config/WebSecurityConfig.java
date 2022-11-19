@@ -1,4 +1,4 @@
-package com.wonjunkang.dailyboard.config;
+package com.wonjunkang.taskboard.config;
 
 
 import org.springframework.context.annotation.Bean;

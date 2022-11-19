@@ -1,4 +1,4 @@
-package com.wonjunkang.dailyboard.model;
+package com.wonjunkang.taskboard.model;
 
 import java.util.List;
 import org.springframework.data.mongodb.core.mapping.DBRef;

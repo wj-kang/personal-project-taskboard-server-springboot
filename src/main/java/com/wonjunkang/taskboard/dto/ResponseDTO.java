@@ -1,4 +1,4 @@
-package com.wonjunkang.dailyboard.dto;
+package com.wonjunkang.taskboard.dto;
 
 import java.util.List;
 import lombok.AllArgsConstructor;

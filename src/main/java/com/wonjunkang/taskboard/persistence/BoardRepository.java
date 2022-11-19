@@ -1,7 +1,7 @@
-package com.wonjunkang.dailyboard.persistence;
+package com.wonjunkang.taskboard.persistence;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import com.wonjunkang.dailyboard.model.Board;
+import com.wonjunkang.taskboard.model.Board;
 
 public interface BoardRepository extends MongoRepository<Board, String> {
 }

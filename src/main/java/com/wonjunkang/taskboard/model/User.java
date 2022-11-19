@@ -1,4 +1,4 @@
-package com.wonjunkang.dailyboard.model;
+package com.wonjunkang.taskboard.model;
 
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;

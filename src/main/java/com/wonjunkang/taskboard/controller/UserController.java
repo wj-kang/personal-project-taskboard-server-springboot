@@ -1,4 +1,4 @@
-package com.wonjunkang.dailyboard.controller;
+package com.wonjunkang.taskboard.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.wonjunkang.dailyboard.dto.ResponseDTO;
-import com.wonjunkang.dailyboard.dto.UserDTO;
-import com.wonjunkang.dailyboard.model.User;
-import com.wonjunkang.dailyboard.persistence.UserRepository;
+import com.wonjunkang.taskboard.dto.ResponseDTO;
+import com.wonjunkang.taskboard.dto.UserDTO;
+import com.wonjunkang.taskboard.model.User;
+import com.wonjunkang.taskboard.persistence.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -39,13 +39,13 @@ public class UserController {
   }
 
   @GetMapping("/{id}")
-  public UserDTO getUserById(@PathVariable(required = false) String id) {
+  public ResponseEntity<?> getUserById(@PathVariable(required = false) String id) {
     Optional<User> found = userRepository.findById(id);
 
     if (found.isPresent()) {
-      return new UserDTO(found.get());
+      return ResponseEntity.ok().body(new UserDTO(found.get()));
     }
-    return null;
+    return ResponseEntity.badRequest().body("Invalid Record");
   }
 
   @GetMapping("/all")

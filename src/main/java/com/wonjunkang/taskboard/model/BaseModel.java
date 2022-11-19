@@ -1,4 +1,4 @@
-package com.wonjunkang.dailyboard.model;
+package com.wonjunkang.taskboard.model;
 
 import java.util.Date;
 import org.springframework.data.annotation.Id;
