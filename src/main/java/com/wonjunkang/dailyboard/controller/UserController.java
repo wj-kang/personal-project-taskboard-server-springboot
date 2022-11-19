@@ -15,18 +15,22 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wonjunkang.dailyboard.dto.ResponseDTO;
 import com.wonjunkang.dailyboard.dto.UserDTO;
 import com.wonjunkang.dailyboard.model.User;
-import com.wonjunkang.dailyboard.service.UserService;
+import com.wonjunkang.dailyboard.persistence.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
-  private final UserService userService;
-  private final PasswordEncoder passwordEncoder;
+
+  private final UserRepository userRepository;
+
+  private final PasswordEncoder encoder;
 
   @Autowired
-  public UserController(UserService userService) {
-    this.userService = userService;
-    this.passwordEncoder = new BCryptPasswordEncoder();
+  public UserController(UserRepository userRepository) {
+    this.userRepository = userRepository;
+    this.encoder = new BCryptPasswordEncoder();
   }
 
   @GetMapping
@@ -36,7 +40,7 @@ public class UserController {
 
   @GetMapping("/{id}")
   public UserDTO getUserById(@PathVariable(required = false) String id) {
-    Optional<User> found = userService.findById(id);
+    Optional<User> found = userRepository.findById(id);
 
     if (found.isPresent()) {
       return new UserDTO(found.get());
@@ -46,19 +50,27 @@ public class UserController {
 
   @GetMapping("/all")
   public List<UserDTO> getAllUsers() {
-    List<User> users = userService.findAll();
+    List<User> users = userRepository.findAll();
     return users.stream().map(UserDTO::new).toList();
   }
 
   @PostMapping("/register")
   public ResponseEntity<?> newUser(@RequestBody User user) {
     try {
-      // encode input password
-      user.setPassword(passwordEncoder.encode(user.getPassword()));
-      // save new enitty
-      userService.createUser(user);
-      // send response DTO
-      return ResponseEntity.status(201).body("Created");
+      if (user == null || user.getEmail() == null) {
+        throw new RuntimeException("Invalid entity");
+      }
+
+      if (userRepository.existsByEmail(user.getEmail())) {
+        log.warn("Email already exists {}", user.getEmail());
+        throw new RuntimeException("Email already exists");
+      }
+
+      user.setPassword(encoder.encode(user.getPassword()));
+      user.setType("SIGN_UP");
+      userRepository.save(user);
+      return ResponseEntity.status(201).body("New User Created");
+      //
     } catch (Exception e) {
       ResponseDTO<String> responseDTO = ResponseDTO.<String>builder().error(e.getMessage()).build();
       return ResponseEntity.badRequest().body(responseDTO);
@@ -67,17 +79,22 @@ public class UserController {
 
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody User user) {
-    User foundUser =
-        userService.getByCredentials(user.getEmail(), user.getPassword(), passwordEncoder);
-    if (foundUser == null) {
-      ResponseDTO<String> responseDTO =
-          ResponseDTO.<String>builder().error("Invalid Credentials").build();
+    try {
+      User existUser = userRepository.findByEmail(user.getEmail());
+      if (existUser == null || !encoder.matches(user.getPassword(), existUser.getPassword())) {
+        throw new RuntimeException("Invalid Credentials");
+      }
+
+      /* TODO : SIGN and ADD JWT TOKEN */
+      UserDTO userDTO = new UserDTO(existUser);
+      userDTO.setToken("TODO : JWT");
+
+      return ResponseEntity.ok().body(userDTO);
+      //
+    } catch (Exception e) {
+      ResponseDTO<String> responseDTO = ResponseDTO.<String>builder().error(e.getMessage()).build();
       return ResponseEntity.badRequest().body(responseDTO);
     }
 
-    /* TODO : SIGN and ADD JWT TOKEN */
-    UserDTO userDTO = new UserDTO(foundUser);
-    userDTO.setToken("TODO : JWT");
-    return ResponseEntity.ok().body(userDTO);
   }
 }
