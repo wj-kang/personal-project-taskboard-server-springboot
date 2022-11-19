@@ -1,8 +1,7 @@
 package com.wonjunkang.dailyboard.model;
 
-import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,16 +12,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
-  @Id
-  private String id;
+public class User extends BaseModel {
 
-  @Field
+  @Indexed(unique = true)
   private String email;
 
-  @Field
   private String password;
 
-  @Field
   private String type;
+
 }
