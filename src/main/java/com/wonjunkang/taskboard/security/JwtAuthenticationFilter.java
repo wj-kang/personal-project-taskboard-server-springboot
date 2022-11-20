@@ -21,8 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-  @Autowired
   private TokenProvider tokenProvider;
+
+  @Autowired
+  public JwtAuthenticationFilter(TokenProvider tokenProvider) {
+    this.tokenProvider = tokenProvider;
+  }
 
   private String parseBearerToken(HttpServletRequest request) {
     String bearerToken = request.getHeader("Authorization");
@@ -37,15 +41,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       FilterChain filterChain) throws ServletException, IOException {
     try {
       String token = parseBearerToken(request);
-      log.info("Filter is running...");
 
       // Validate token
       if (token != null && !token.equalsIgnoreCase("null")) {
-        String id = tokenProvider.validateAndGetId(token);
-        log.info("Authenticated id: " + id);
+        String userId = tokenProvider.validateAndGetId(token);
+        log.info("Authenticated id: " + userId);
 
         AbstractAuthenticationToken authentication =
-            new UsernamePasswordAuthenticationToken(id, null, AuthorityUtils.NO_AUTHORITIES);
+            new UsernamePasswordAuthenticationToken(userId, null, AuthorityUtils.NO_AUTHORITIES);
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
