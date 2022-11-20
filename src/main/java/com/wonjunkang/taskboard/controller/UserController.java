@@ -16,6 +16,7 @@ import com.wonjunkang.taskboard.dto.ResponseDTO;
 import com.wonjunkang.taskboard.dto.UserDTO;
 import com.wonjunkang.taskboard.model.User;
 import com.wonjunkang.taskboard.persistence.UserRepository;
+import com.wonjunkang.taskboard.security.TokenProvider;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -23,15 +24,14 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/user")
 public class UserController {
 
-  private final UserRepository userRepository;
-
-  private final PasswordEncoder encoder;
+  @Autowired
+  private UserRepository userRepository;
 
   @Autowired
-  public UserController(UserRepository userRepository) {
-    this.userRepository = userRepository;
-    this.encoder = new BCryptPasswordEncoder();
-  }
+  private TokenProvider tokenProvider;
+
+  private final PasswordEncoder encoder = new BCryptPasswordEncoder();
+
 
   @GetMapping
   public String testGetController() {
@@ -85,9 +85,9 @@ public class UserController {
         throw new RuntimeException("Invalid Credentials");
       }
 
-      /* TODO : SIGN and ADD JWT TOKEN */
+      String token = tokenProvider.createToken(existUser.getId());
       UserDTO userDTO = new UserDTO(existUser);
-      userDTO.setToken("TODO : JWT");
+      userDTO.setToken(token);
 
       return ResponseEntity.ok().body(userDTO);
       //

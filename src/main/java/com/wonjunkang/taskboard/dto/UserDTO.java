@@ -1,5 +1,7 @@
 package com.wonjunkang.taskboard.dto;
 
+import java.util.List;
+import com.wonjunkang.taskboard.model.Board;
 import com.wonjunkang.taskboard.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,4 +27,5 @@ public class UserDTO {
   private String type;
 
   private String token;
+
 }
