@@ -22,5 +22,7 @@ public class TaskList extends BaseModel {
 
   private String ownerId;
 
+  private String boardId;
+
 }
 
