@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '2.7.5'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id 'org.springframework.boot' version '2.6.6'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
 
 group = 'com.wonjunkang'
@@ -23,11 +23,12 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
-	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
-	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
+  implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 	
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	compileOnly 'org.projectlombok:lombok'
+	compileOnly 'javax.xml.bind:jaxb-api:2.1'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
