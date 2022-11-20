@@ -34,6 +34,9 @@ public class TaskListController {
       TaskList newList = taskListRepository.save(list);
 
       Board board = boardRepository.findById(list.getBoardId()).get();
+      if (!board.getOwnerId().equals(userId)) {
+        throw new RuntimeException("Invalid Request");
+      }
       if (board.getLists() == null) {
         board.setLists(new ArrayList<TaskList>());
       }
@@ -84,6 +87,7 @@ public class TaskListController {
       }
 
       found.setTitle(list.getTitle());
+      found.setTasks(list.getTasks());
       TaskList updated = taskListRepository.save(found);
 
       return ResponseEntity.status(200).body(updated);

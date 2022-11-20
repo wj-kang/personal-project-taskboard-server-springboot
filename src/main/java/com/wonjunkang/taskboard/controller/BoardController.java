@@ -52,15 +52,14 @@ public class BoardController {
   }
 
   @PostMapping
-  public ResponseEntity<?> createBoard(@AuthenticationPrincipal String userId,
-      @RequestBody Board board) {
+  public ResponseEntity<?> createBoard(@AuthenticationPrincipal String userId) {
     try {
       User user = userRepository.findById(userId).get();
 
-      if (board == null) {
-        throw new RuntimeException("Invalid entity");
-      }
-      board.setOwnerId(userId);
+      Board board = Board.builder()//
+          .ownerId(userId)//
+          .title("New Board")//
+          .build();
       Board newBoard = boardRepository.save(board);
 
       if (user.getBoards() == null) {
@@ -113,6 +112,7 @@ public class BoardController {
       }
 
       found.setTitle(board.getTitle());
+      found.setLists(board.getLists());
       Board updated = boardRepository.save(found);
       return ResponseEntity.status(200).body(updated);
       //

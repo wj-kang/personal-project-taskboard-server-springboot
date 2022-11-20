@@ -34,6 +34,9 @@ public class TaskController {
       Task newTask = taskRepository.save(task);
 
       TaskList list = taskListRepository.findById(task.getListId()).get();
+      if (!list.getOwnerId().equals(userId)) {
+        throw new RuntimeException("Invalid Request");
+      }
       if (list.getTasks() == null) {
         list.setTasks(new ArrayList<Task>());
       }
