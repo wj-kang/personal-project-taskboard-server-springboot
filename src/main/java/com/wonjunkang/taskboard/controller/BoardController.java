@@ -34,7 +34,7 @@ public class BoardController {
       @PathVariable String boardId) {
     Optional<Board> found = boardRepository.findById(boardId);
 
-    if (found.isPresent() && found.get().getId() == userId) {
+    if (found.isPresent() && found.get().getOwnerId().equals(userId)) {
       return ResponseEntity.ok().body(found.get());
     }
 
