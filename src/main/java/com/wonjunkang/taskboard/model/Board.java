@@ -17,8 +17,10 @@ public class Board extends BaseModel {
 
   private String title;
 
-  @DBRef
+  @DBRef(lazy = true)
   private List<TaskList> lists;
+
+  private String ownerId;
 
 }
 

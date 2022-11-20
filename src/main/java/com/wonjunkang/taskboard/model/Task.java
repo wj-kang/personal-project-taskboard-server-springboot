@@ -25,5 +25,9 @@ public class Task extends BaseModel {
 
   private List<String> label;
 
+  private String listId;
+
+  private String ownerId;
+
 }
 

@@ -17,8 +17,10 @@ public class TaskList extends BaseModel {
 
   private String title;
 
-  @DBRef
+  @DBRef(lazy = true)
   private List<Task> tasks;
+
+  private String ownerId;
 
 }
 
