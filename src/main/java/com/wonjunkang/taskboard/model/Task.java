@@ -19,8 +19,6 @@ public class Task extends BaseModel {
 
   private String description;
 
-  private boolean isDone;
-
   private Date dueDate;
 
   private List<String> label;
