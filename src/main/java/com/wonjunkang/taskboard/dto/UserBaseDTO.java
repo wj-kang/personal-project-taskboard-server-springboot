@@ -1,7 +1,5 @@
 package com.wonjunkang.taskboard.dto;
 
-import java.util.List;
-import com.wonjunkang.taskboard.model.Board;
 import com.wonjunkang.taskboard.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,9 +10,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
+public class UserBaseDTO {
 
-  public UserDTO(User user) {
+  public UserBaseDTO(User user) {
     this.id = user.getId();
     this.email = user.getEmail();
     this.type = user.getType();
@@ -25,7 +23,5 @@ public class UserDTO {
   private String email;
 
   private String type;
-
-  private String token;
 
 }
