@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.wonjunkang.taskboard.dto.ResponseDTO;
 import com.wonjunkang.taskboard.model.Board;
+import com.wonjunkang.taskboard.model.TaskList;
 import com.wonjunkang.taskboard.model.User;
 import com.wonjunkang.taskboard.persistence.BoardRepository;
+import com.wonjunkang.taskboard.persistence.TaskListRepository;
 import com.wonjunkang.taskboard.persistence.UserRepository;
 
 @RestController
@@ -28,6 +30,9 @@ public class BoardController {
 
   @Autowired
   private UserRepository userRepository;
+
+  @Autowired
+  private TaskListRepository taskListRepository;
 
   @GetMapping("/{boardId}")
   public ResponseEntity<?> getBoardById(@AuthenticationPrincipal String userId,
@@ -59,14 +64,20 @@ public class BoardController {
       Board board = Board.builder()//
           .ownerId(userId)//
           .title("New Board")//
-          .build();
+          .lists(new ArrayList<>()).build();
       Board newBoard = boardRepository.save(board);
 
-      if (user.getBoards() == null) {
-        user.setBoards(new ArrayList<Board>());
-      }
       user.getBoards().add(newBoard);
       userRepository.save(user);
+
+      TaskList newList = taskListRepository.save(TaskList.builder()//
+          .title("New List")//
+          .boardId(newBoard.getId())//
+          .ownerId(user.getId())//
+          .tasks(new ArrayList<>())//
+          .build());
+      newBoard.getLists().add(newList);
+      newBoard = boardRepository.save(newBoard);
 
       return ResponseEntity.status(201).body(newBoard);
       //
@@ -111,8 +122,12 @@ public class BoardController {
         throw new RuntimeException("Invalid Request");
       }
 
-      found.setTitle(board.getTitle());
-      found.setLists(board.getLists());
+      if (board.getTitle() != null) {
+        found.setTitle(board.getTitle());
+      }
+      if (board.getLists() != null) {
+        found.setLists(board.getLists());
+      }
       Board updated = boardRepository.save(found);
       return ResponseEntity.status(200).body(updated);
       //
