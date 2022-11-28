@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.wonjunkang.taskboard.dto.ResponseDTO;
+import com.wonjunkang.taskboard.dto.TaskListBaseDTO;
 import com.wonjunkang.taskboard.model.Board;
 import com.wonjunkang.taskboard.model.TaskList;
 import com.wonjunkang.taskboard.persistence.BoardRepository;
@@ -31,14 +32,12 @@ public class TaskListController {
     try {
       list.setTitle("New List");
       list.setOwnerId(userId);
+      list.setTasks(new ArrayList<>());
       TaskList newList = taskListRepository.save(list);
 
       Board board = boardRepository.findById(list.getBoardId()).get();
       if (!board.getOwnerId().equals(userId)) {
         throw new RuntimeException("Invalid Request");
-      }
-      if (board.getLists() == null) {
-        board.setLists(new ArrayList<TaskList>());
       }
       board.getLists().add(newList);
       boardRepository.save(board);
@@ -86,10 +85,18 @@ public class TaskListController {
         throw new RuntimeException("Invalid Request");
       }
 
-      found.setTitle(list.getTitle());
-      found.setTasks(list.getTasks());
+      if (list.getTitle() != null) {
+        found.setTitle(list.getTitle());
+      }
+      if (list.getTasks() != null) {
+        found.setTasks(list.getTasks());
+      }
       TaskList updated = taskListRepository.save(found);
 
+      if (list.getTasks() == null) {
+        // title update case => return base DTO
+        return ResponseEntity.status(200).body(new TaskListBaseDTO(updated));
+      }
       return ResponseEntity.status(200).body(updated);
       //
     } catch (Exception e) {

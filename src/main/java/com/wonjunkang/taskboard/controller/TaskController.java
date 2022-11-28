@@ -1,6 +1,5 @@
 package com.wonjunkang.taskboard.controller;
 
-import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,16 +28,15 @@ public class TaskController {
   @PostMapping
   public ResponseEntity<?> createTask(@AuthenticationPrincipal String userId,
       @RequestBody Task task) {
+    // listId will be passed
     try {
       task.setOwnerId(userId);
+      task.setTitle("New task");
       Task newTask = taskRepository.save(task);
 
       TaskList list = taskListRepository.findById(task.getListId()).get();
       if (!list.getOwnerId().equals(userId)) {
         throw new RuntimeException("Invalid Request");
-      }
-      if (list.getTasks() == null) {
-        list.setTasks(new ArrayList<Task>());
       }
       list.getTasks().add(newTask);
       taskListRepository.save(list);
@@ -86,10 +84,18 @@ public class TaskController {
         throw new RuntimeException("Invalid Request");
       }
 
-      found.setTitle(task.getTitle());
-      found.setDescription(task.getDescription());
-      found.setDueDate(task.getDueDate());
-      found.setLabel(task.getLabel());
+      if (task.getTitle() != null) {
+        found.setTitle(task.getTitle());
+      }
+      if (task.getDescription() != null) {
+        found.setDescription(task.getDescription());
+      }
+      if (task.getDueDate() != null) {
+        found.setDueDate(task.getDueDate());
+      }
+      if (task.getLabel() != null) {
+        found.setLabel(task.getLabel());
+      }
       Task updated = taskRepository.save(found);
 
       return ResponseEntity.status(200).body(updated);
