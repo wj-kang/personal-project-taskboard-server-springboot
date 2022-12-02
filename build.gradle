@@ -25,10 +25,14 @@ dependencies {
 
 	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
   implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
-	
+// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+	compileOnly group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.14.1'
+	// https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on
+	compileOnly group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.70'
+
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	compileOnly 'org.projectlombok:lombok'
-	compileOnly 'javax.xml.bind:jaxb-api:2.1'
+
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
