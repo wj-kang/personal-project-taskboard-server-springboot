@@ -22,7 +22,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .httpBasic().disable()// token을 사용하므로 basic 인증 disable
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()//
         .authorizeRequests()//
-        .antMatchers("/api/user/login", "/api/user/register").permitAll() //
+        .antMatchers("/api/user/login", "/api/user/register", "/api/user/guest").permitAll() //
         .anyRequest().authenticated(); // 이외 경로는 모두 인증
 
     // 매 요청마다 CorsFilter 실행 후에 JWT authentication Filter를 실행
