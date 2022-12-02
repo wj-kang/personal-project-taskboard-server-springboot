@@ -117,6 +117,9 @@ public class TaskListController {
       @RequestBody TaskOrderUpdateDTO data) {
     try {
       Board board = boardRepository.findById(data.getBoardId()).get();
+      if (!board.getOwnerId().equals(userId)) {
+        throw new RuntimeException("Invalid Request");
+      }
       List<TaskList> lists = board.getLists();
 
       if (data.getDestListIdx() == data.getSrcListIdx()) {

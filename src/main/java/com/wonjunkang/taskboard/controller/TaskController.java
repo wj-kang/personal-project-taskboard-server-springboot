@@ -24,14 +24,14 @@ public class TaskController {
   @Autowired
   private TaskRepository taskRepository;
 
-
   @PostMapping
   public ResponseEntity<?> createTask(@AuthenticationPrincipal String userId,
       @RequestBody Task task) {
-    // listId will be passed
     try {
       task.setOwnerId(userId);
-      task.setTitle("New task");
+      if (task.getTitle() == null || task.getTitle() == "") {
+        task.setTitle("New task");
+      }
       Task newTask = taskRepository.save(task);
 
       TaskList list = taskListRepository.findById(task.getListId()).get();
@@ -61,6 +61,10 @@ public class TaskController {
       if (!found.getOwnerId().equals(userId)) {
         throw new RuntimeException("Invalid Request");
       }
+
+      TaskList list = taskListRepository.findById(found.getListId()).get();
+      list.getTasks().remove(found);
+      taskListRepository.save(list);
 
       taskRepository.delete(found);
       return ResponseEntity.status(200).body("Deleted");
