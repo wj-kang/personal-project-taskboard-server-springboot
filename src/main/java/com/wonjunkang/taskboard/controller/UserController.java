@@ -9,15 +9,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.wonjunkang.taskboard.dto.ResponseDTO;
 import com.wonjunkang.taskboard.dto.UserBaseDTO;
 import com.wonjunkang.taskboard.dto.UserLoginDTO;
+import com.wonjunkang.taskboard.dto.UserPasswordDTO;
 import com.wonjunkang.taskboard.model.Board;
 import com.wonjunkang.taskboard.model.TaskList;
 import com.wonjunkang.taskboard.model.User;
@@ -98,11 +101,6 @@ public class UserController {
           .ownerId(createdUser.getId()).lists(new ArrayList<>()).build());
       createdUser.getBoards().add(newBoard);
       userRepository.save(createdUser);
-
-      // TaskList newList = taskListRepository.save(TaskList.builder().title("New List")
-      // .boardId(newBoard.getId()).ownerId(createdUser.getId()).build());
-      // newBoard.getLists().add(newList);
-      // boardRepository.save(newBoard);
       createDefaultTaskListsForNewUser(newBoard);
 
       return ResponseEntity.status(201).body("New User Created");
@@ -148,16 +146,49 @@ public class UserController {
       createdUser.getBoards().add(newBoard);
       userRepository.save(createdUser);
 
-      // TaskList newList = taskListRepository.save(TaskList.builder().title("New List")
-      // .boardId(newBoard.getId()).ownerId(createdUser.getId()).build());
-      // newBoard.getLists().add(newList);
-      // boardRepository.save(newBoard);
       createDefaultTaskListsForNewUser(newBoard);
 
       String token = tokenProvider.createToken(createdUser.getId());
       UserLoginDTO userLoginDTO = new UserLoginDTO(createdUser, token);
 
       return ResponseEntity.ok().body(userLoginDTO);
+      //
+    } catch (Exception e) {
+      ResponseDTO<String> responseDTO = ResponseDTO.<String>builder().error(e.getMessage()).build();
+      return ResponseEntity.badRequest().body(responseDTO);
+    }
+  }
+
+  @DeleteMapping
+  public ResponseEntity<?> deleteUser(@AuthenticationPrincipal String userId) {
+    try {
+      User existUser = userRepository.findById(userId).get();
+      if (existUser == null) {
+        throw new RuntimeException("Invalid Credentials");
+      }
+
+      userRepository.delete(existUser);
+      return ResponseEntity.status(200).body("Deleted");
+      //
+    } catch (Exception e) {
+      ResponseDTO<String> responseDTO = ResponseDTO.<String>builder().error(e.getMessage()).build();
+      return ResponseEntity.badRequest().body(responseDTO);
+    }
+  }
+
+  @PutMapping("/password")
+  public ResponseEntity<?> changePassword(@AuthenticationPrincipal String userId,
+      @RequestBody UserPasswordDTO body) {
+    try {
+      User existUser = userRepository.findById(userId).get();
+      if (existUser == null || !encoder.matches(body.getCurrPassword(), existUser.getPassword())) {
+        throw new RuntimeException("Invalid Credentials");
+      }
+
+      existUser.setPassword(encoder.encode(body.getNewPassword()));
+      userRepository.save(existUser);
+
+      return ResponseEntity.status(200).body("Updated");
       //
     } catch (Exception e) {
       ResponseDTO<String> responseDTO = ResponseDTO.<String>builder().error(e.getMessage()).build();
